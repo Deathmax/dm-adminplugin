@@ -1,0 +1,3 @@
+#summary Partial documentation on the AdminClient API.
+
+=Under Construction=
