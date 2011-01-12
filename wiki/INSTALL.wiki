@@ -1,0 +1,8 @@
+#summary Installation instruction for DM_AdminPlugin2
+
+= Download =
+  * Download the latest compiled version at http://code.google.com/p/dm-adminplugin/downloads/list OR
+  * Checkout the latest revision and compile it yourself (It is built under .Net 3.5 using Visual Studio 2008)
+
+= Installation =
+== Under Construction ==
