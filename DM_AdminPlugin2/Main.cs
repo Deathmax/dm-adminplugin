@@ -71,10 +71,11 @@ namespace DM_AdminPlugin2
 
         private void parseCommand(AdminClient client, string message)
         {
-            var args = message.Split(' ');
+            //var args = message.Split(' ');
             foreach (var command in DM_AdminPluginHelper.commandList)
             {
-                if (args[0] == command.Activator || args[0] == command.Activator.Substring(1) || (args[0] + args[1]) == command.Activator || (args[0] + args[1]) == command.Activator.Substring(1))
+                //if (args[0] == command.Activator || args[0] == command.Activator.Substring(1) || (args[0] + args[1]) == command.Activator || (args[0] + args[1]) == command.Activator.Substring(1))
+                if (message.StartsWith(command.Activator) || message.StartsWith(command.Activator.Substring(1)))
                 {
                     command.delegatefunc(client, message);
                     break;
