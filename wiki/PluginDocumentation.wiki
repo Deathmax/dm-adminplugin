@@ -1,0 +1,7 @@
+#summary Various documentation for the plugin
+
+= Installation =
+Look at INSTALL
+
+= Editing Config =
+== Under Construction ==
