@@ -7,4 +7,6 @@
 = Installation =
   # Download the latest dedicated build from http://alteriw.net/dedicate if you haven't already.
   # Place the plugin DLL into MW2Root\plugins\
-  # Place the rest of the plugin(admin.dat, message files) into MW2Root\plugins\dm_admin\ (You can change this directory later)
+  # Place the rest of the plugin(admin.dat, message files) into MW2Root\plugins\dm_admin\
+    * You can change this directory later
+    * Please make sure you're launching the server from iw4.exe, else the plugin's RCON function will not work.
