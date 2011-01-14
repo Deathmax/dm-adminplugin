@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Threading;
 using aIW;
 
 namespace DM_AdminPlugin2
@@ -70,10 +71,12 @@ namespace DM_AdminPlugin2
             foreach (var admin in _adminList)
             {
                 if (admin.XUID == xuid)
+                {
                     if (admin.Flags.Contains(flag) || levelFlagCheck(admin.Level, flag) || admin.Flags.Contains('*'))
                         return true;
                     else
                         return false;
+                }
                 else
                     continue;
             }
@@ -85,7 +88,7 @@ namespace DM_AdminPlugin2
             foreach (var admin in _adminList)
             {
                 if (admin.XUID == xuid)
-                    return admin.Flags;
+                    return (new string(admin.Flags) + new string(returnLevelFlag(admin.Level))).ToCharArray();
                 else
                     continue;
             }
@@ -97,7 +100,7 @@ namespace DM_AdminPlugin2
             foreach (var level in _levelList)
             {
                 if (level.LevelNum == levelnum)
-                    if (level.Flags.Contains(flag))
+                    if (level.Flags.Contains(flag) || level.Flags.Contains('*'))
                         return true;
                     else
                         return false;
@@ -205,6 +208,10 @@ namespace DM_AdminPlugin2
                     filteredout += "^" + part;
             }
             return filteredout.Substring(1);
+        }
+        public static void Sleep(object sleep)
+        {
+            Thread.Sleep(int.Parse(sleep.ToString()));
         }
         #endregion
 
