@@ -20,14 +20,22 @@ namespace DM_AdminPlugin2
         private DateTime lastRequest;
         private bool init = false;
         private string consoleData = "";
+        private int listenport;
         #endregion
         public override void OnFrame()
         {
-            if (!init)
+            try
             {
-                Thread start = new Thread(new ThreadStart(Start));
-                start.Start();
-                init = true;
+                if (!init)
+                {
+                    Thread start = new Thread(new ThreadStart(Start));
+                    start.Start();
+                    init = true;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
             }
         }
         public void Start()
@@ -35,31 +43,47 @@ namespace DM_AdminPlugin2
             Log.Info("DM_AdminPlugin : Starting RconServer");
             try
             {
-                int listenport = 28900;
+                listenport = 28900;
                 if (!Int32.TryParse(DM_AdminPluginHelper.modCvars.FirstOrDefault(i => i.Key == "p_rcon_port").Value, out listenport))
                     listenport = 28900;
-                //password = DM_AdminPluginHelper.modCvars.First(i => i.Key == "p_rcon_password").Value;
                 password = GetDvar("rcon_password");
                 Log.Info(string.Format("DM_AdminPlugin : RconServer : Server is running at UDP port {0} and password is {1}",
                     listenport.ToString(),
                     password));
-                UdpClient listener = new UdpClient(listenport);
                 var listenEP = new IPEndPoint(IPAddress.Any, listenport);
 
                 while (continueServer)
                 {
+                    UdpClient listener = new UdpClient(listenport);
+                    readingDvars();
                     consoleData = "";
                     listenEP = new IPEndPoint(IPAddress.Any, listenport);
                     lastRequest = DateTime.Now;
                     byte[] bytes = listener.Receive(ref listenEP);
-                    Log.Info(string.Format("DM_AdminPlugin : Recieved packet from {0}", listenEP.Address.ToString()));
+                    Log.Info(string.Format("DM_AdminPlugin : Recieved packet from {0}:{1}", listenEP.Address.ToString(), listenEP.Port.ToString()));
                     var packet = parsePacket(bytes);
                     listener.Send(packet, packet.Length, listenEP);
+                    listener.Close();
                 }
             }
             catch (Exception e)
             {
                 Log.Error(e);
+            }
+        }
+
+        private void readingDvars()
+        {
+            int port = 28900;
+            if (!Int32.TryParse(DM_AdminPluginHelper.modCvars.FirstOrDefault(i => i.Key == "p_rcon_port").Value, out port))
+                port = 28900;
+            string temp_password = GetDvar("rcon_password");
+            if (temp_password != password || port != listenport)
+            {
+                Log.Info(string.Format("DM_AdminPlugin : Server is now listening at UDP port {0} and the password is {1}",
+                    port.ToString(), password));
+                listenport = port;
+                password = temp_password;
             }
         }
 

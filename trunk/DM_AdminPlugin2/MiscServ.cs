@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading;
+using System.Diagnostics;
+using System.Reflection;
 using aIW;
 
 namespace DM_AdminPlugin2
@@ -30,23 +32,20 @@ namespace DM_AdminPlugin2
         {
             if (message == "!rules all")
             {
-                var called = DateTime.Now;
                 if (DM_AdminPluginHelper.checkFlag(client.GUID, 'G'))
                 {
+                    Thread thread = new Thread(new ParameterizedThreadStart(DM_AdminPluginHelper.Sleep));
                     foreach (var line in _rules)
                     {
                         var temp = line.Split('{');
                         foreach (var line2 in temp)
                         {
-                            SayAll("MiscServ", line2);
-                            Log.Info("DM_AdminPlugin : MiscServ : Said : " + line2);
+                            SayTo(client, "MiscServ", line2);
+                            Log.Info("DM_AdminPlugin : MiscServ : Said : " + line2 + " : To : " + client.Name);
                         }
-                        while (true)
-                        {
-                            var diff = DateTime.Now - called;
-                            if (diff.Minutes >= 1)
-                                break;
-                        }
+                        thread.Start();
+                        while (thread.ThreadState == System.Threading.ThreadState.Running)
+                            continue;
                     }
                 }
                 else
@@ -61,12 +60,13 @@ namespace DM_AdminPlugin2
                         var temp = line.Split('{');
                         foreach (var line2 in temp)
                         {
-                            SayTo(client, "MiscServ", line2);
-                            Log.Info("DM_AdminPlugin : MiscServ : Said : " + line2 + " : To : " + client.Name);
+                            SayAll("MiscServ", line2);
+                            Log.Info("DM_AdminPlugin : MiscServ : Said : " + line2);
                         }
-                        Thread.Sleep(500);
                     }
                 }
+                else
+                    SayTo(client, "MiscServ", "You don't have access");
             }
         }
 
@@ -78,7 +78,7 @@ namespace DM_AdminPlugin2
             {
                 for (int i = 0; i < DM_AdminPluginHelper.commandList.Count; i++)
                 {
-                    if (flags.Contains(DM_AdminPluginHelper.commandList[i].ACL))
+                    if (flags.Contains(DM_AdminPluginHelper.commandList[i].ACL) || flags.Contains('*'))
                         helpstring += DM_AdminPluginHelper.commandList[i].Activator + " ";
                     else
                         continue;
