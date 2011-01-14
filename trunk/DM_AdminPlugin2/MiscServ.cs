@@ -17,6 +17,7 @@ namespace DM_AdminPlugin2
         private DateTime _lastRun;
         private int _currentMessage;
         private bool _init;
+        Random random = new Random();
         #endregion
 
         #region Commands
