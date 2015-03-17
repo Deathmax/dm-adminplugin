@@ -1,0 +1,2 @@
+DM\_AdminPlugin2 is a plugin designed for aIW dedicated servers running v0.3 and above that has support for the AdminPlugin API.
+The project in the future hopes to replace B3 and other external admin tools.
